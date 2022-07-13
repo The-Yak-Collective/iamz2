@@ -1,0 +1,156 @@
+<html lang=en>
+  <head>
+
+    <meta charset=utf-8>
+    <title>iamz1test</title>
+
+  </head>
+  <body>
+    <div id="twilio_video" >
+
+            Name: <div id="nameshow">iamz1</div>
+            <button id="join_leave">Join call</button>
+            <label for="rover">Choose a rover:</label>
+            <select id="rover">
+                <option value="WWG">Wonderful Wandering Growth</option>
+                <option value="AFW">Abio Flex Wanderer</option>
+            </select>
+            <button id="leave" onclick="disconnect()">leave</button>
+        <p id="par_count">Disconnected.</p>
+        <div id="container" class="container">
+            <div id="vid_local" class="participant"><div></div><div></div></div>
+            <!-- more participants will be added dynamically here -->
+        </div>
+        <script src="http://media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
+
+    </div>
+
+<script>
+var my_user_name="viewer_"+Math.random().toString(36).substr(2, 5)
+document.getElementById("nameshow").innerHTML=my_user_name;
+
+const button = document.getElementById('join_leave');
+const container = document.getElementById('container');
+const par_count = document.getElementById('par_count');
+var connected = false;
+var room;
+var thesid=0;
+
+function connectButtonHandler(event) {
+    event.preventDefault();
+    if (!connected) {
+        var username = my_user_name;
+        button.disabled = true;
+        button.innerHTML = 'Connecting...';
+        connect(username).then(() => {
+            button.innerHTML = 'Leave call';
+            button.disabled = false;
+        }).catch(() => {
+            alert('Connection failed. Is the backend running?');
+            button.innerHTML = 'Join call';
+            button.disabled = false;
+        });
+    }
+    else {
+        disconnect();
+        button.innerHTML = 'Join call';
+        connected = false;
+    }
+};
+
+function connect(username) {
+    var promise = new Promise((resolve, reject) => {
+        // get a token from the back end
+        connectto=document.getElementById("rover").value;
+        fetch('https://visavis.chat/twilio_iamz1_token_new', {
+            method: 'POST',
+            body: JSON.stringify({'username': username,'roomname': connectto})
+        }).then(res => res.json()).then(data => {
+            // join video call
+            return Twilio.Video.connect(data.token,{audio: false});
+        }).then(_room => {
+            room = _room;
+            console.log("the room:",room);
+            room.participants.forEach(participantConnected)
+            room.on('participantConnected', participantConnected);
+            room.on('participantDisconnected', participantDisconnected);
+            connected = true;
+            updateParticipantCount();
+            resolve();
+        }).catch(() => {
+            reject();
+        });
+    });
+    return promise;
+};
+
+function updateParticipantCount() {
+    if (!connected)
+        par_count.innerHTML = 'Disconnected.';
+    else
+        par_count.innerHTML = (room.participants.size + 1) + ' participants online.';
+};
+
+function participantConnected(participant) {
+    console.log(participant)
+    var participant_div = document.createElement('div');
+    participant_div.setAttribute('id', participant.sid);
+    participant_div.setAttribute('class', 'participant');
+
+    var tracks_div = document.createElement('div');
+    participant_div.appendChild(tracks_div);
+
+    var label_div = document.createElement('div');
+    label_div.innerHTML = participant.identity;
+    participant_div.appendChild(label_div);
+
+    container.appendChild(participant_div);
+    console.log("here are the tracks of this participant",participant.tracks);
+    participant.tracks.forEach(publication => {
+        console.log('got here - should only happen once');
+        thesid=participant.sid;
+        if (publication.isSubscribed)
+            trackSubscribed(tracks_div, publication.track);
+    });
+    participant.on('trackSubscribed', track => trackSubscribed(tracks_div, track));
+    participant.on('trackUnsubscribed', trackUnsubscribed);
+
+    updateParticipantCount();
+};
+
+function participantDisconnected(participant) {
+    document.getElementById(participant.sid).remove();
+    if (participant.sid==thesid || participant.identity=="iamz1")
+        disconnect();
+    updateParticipantCount();
+};
+
+function trackSubscribed(div, track) {
+    temp=track.attach();
+    temp.muted=true;
+    console.log(temp);
+    div.appendChild(temp);
+};
+
+function trackUnsubscribed(track) {
+    track.detach().forEach(element => element.remove());
+};
+
+function disconnect() {
+    room.disconnect();
+    while (container.lastChild.id != 'vid_local')
+        container.removeChild(container.lastChild);
+    button.innerHTML = 'Join call';
+    connected = false;
+    updateParticipantCount();
+};
+
+button.addEventListener('click', connectButtonHandler);
+
+setTimeout(function(){disconnect();},300*1000);
+</script>
+  </body>
+</html>
+
+
+
