@@ -1,0 +1,10 @@
+@reboot sleep 10 && nohup /usr/bin/python3 /home/pi/test/iamz1/iamz1.py &
+@reboot sleep 20 && cd /home/pi/test/iamz1 && nohup /usr/bin/python3 logrpc.py &
+@reboot sleep 20 && cd /home/pi/test/iamz1 && nohup /usr/bin/python3 legsrpc.py &
+@reboot sleep 20 && cd /home/pi/test/iamz1 && /usr/bin/python3 ragrpc.py 
+@reboot sleep 20 && cd /home/pi/test/iamz1 && /usr/bin/python3 imurpc.py
+@reboot sleep 20 && /usr/bin/python3 /home/pi/test/iamz1/testunload.py
+@reboot sleep 60 && /usr/bin/python3 /home/pi/test/Rover-Twitter/wokeup.py
+@reboot sleep 60 && cd /home/pi/test/iamz1 && nohup /usr/bin/python3 webapp/app.py
+@reboot sleep 120 && cd /home/pi/test/iamz1 &&  /bin/bash startpagekite PAGEKITEPASSWORD
+@reboot /usr/sbin/openvpn --config /etc/openvpn/client.conf &

@@ -1,0 +1,7 @@
+export IAMZ1_DISCORD_KEY= #key to talk on discord
+export USERHOMEDIR= #user home dir
+export WHEREIRUNDIR= #same as IAMZ2_DIR
+export TWEAKS_HOOK= #webhook for tweaks directory (or other place to push answers discord cannot handle
+export TWITTERHOMEDIR= #location of Rover-Twitter
+export PARENTLOGDIR= #place where logs will be stored, for example - /home/pi/gdrive/logs/
+export STREAM_KEY= #stream key for twitch

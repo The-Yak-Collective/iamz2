@@ -1,0 +1,12 @@
+iamz2 install instructions
+1. create directory and clone iamz2 into it
+2. clone rover_twitter into same directory
+3. in /etc/environment, set YAK_ROVER_NAME=[tla, such as WWG]
+4. in /etc/environment, set IAMZ2_DIR to home directory /home/pi/iamz2 (?)
+5. fix crontab according to the "setup" template
+6. create .env file in IAMZ2_DIR. use template in setup
+7. create .env file in twitter directory. use template in setup
+8. install python libs needed: (see requirements file) may be incomplete or too complex. note discord.py version needs to be above 2.0
+9. set up VPN (ask victor how) 
+10. optional - set up logging with gdrive (no instructions)
+11. do we need pagekite setup instructions?

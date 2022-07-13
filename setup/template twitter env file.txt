@@ -1,0 +1,5 @@
+#all these come from twitter. you can also use simpler authentication, but not for this s/w
+CK= #
+CS= #
+ATK= #
+ATS= #

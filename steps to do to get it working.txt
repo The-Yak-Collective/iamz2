@@ -1,0 +1,7 @@
+1. correct instructions
+2. fix crontab
+3. setup python lib locations
+3.1 test/edit/delete ll commands
+4. fix discord app to work with directories (self, ll commands, etc.) + iamz2 location
+5. fix webapp to work with directories, etc.
+6. create stubs for "startup"
